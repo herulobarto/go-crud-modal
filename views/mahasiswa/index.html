@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>GO CRUD MODAL</title>
+  </head>
+  <body>
+    <!-- tambah modal bootstrap 5 -->
+    <div class="modal fade" id="modalMahasiswa" tabindex="-1" aria-labelledby="modalMahasiswaLabel" aria-hidden="true">
+      
+    </div>
+    
+    <div class="container mt-5">
+
+      <button type="button" class="btn btn-primary add-mahasiswa">Tambah Data</button>
+
+      <table class="table mt-3">
+        <thead>
+          <th>#</th>
+          <th>Nama Lengkap</th>
+          <th>L / P</th>
+          <th>Tempat, Tanggal Lahir</th>
+          <th>Alamat</th>
+          <th>Aksi</th>
+        </thead>
+        {{ .data }}
+      </table>
+    </div>
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!-- memakai jquery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+   
+
+    <script>
+
+      var site_url = "http://localhost:8000/";
+
+      $(document).ready(function(){
+        $('.add-mahasiswa').click(function(){
+          $.get(site_url + "mahasiswa/get_form", function(html){
+            $('#modalMahasiswa').html(html).modal('show')
+          });
+        });
+
+        $(document).on('click', '.edit-mahasiswa', function(){
+
+          var id = $(this).attr('data-id');
+          $.get(site_url + "mahasiswa/get_form?id=" + id, function(html){
+            $('#modalMahasiswa').html(html).modal('show')
+          });
+        });
+
+        $(document).on('submit', '#form-mahasiswa', function(e){
+          e.preventDefault();
+          $.ajax({
+            type: $(this).attr('method'),
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            dataType: "json",
+            success: function(response){
+              console.log("Response from server:", response); // Menampilkan respons dari server di konsol
+              $('tbody').html(response.data); // Menyisipkan data baru ke dalam tabel
+              alert(response.message); // Menampilkan pesan sukses
+              $('#modalMahasiswa').modal('hide'); // Menutup modal
+            },
+            error: function(response){
+              console.log("Error:", response); // Menampilkan pesan error di konsol
+            }
+          });
+        });
+        
+        
+        
+        
+      });
+
+    </script>
+
+  </body>
+</html>
